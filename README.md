@@ -145,6 +145,209 @@ dbms_output.put_line(a || ' / ' || b  || ' = ' || divison);
 dbms_output.put_line(a || ' ** ' || b  || ' = ' || power);
 dbms_output.put_line(a || ' % ' || b  || ' = ' || mod_remainder);
 end;
+--pl/sql if else conditions
+-- numbers
+declare
+a number := 3;
+b number := 2;
+begin
+    if a < b then
+    dbms_output.put_line(a || ' < ' || b);
+	elsif a > b then
+    dbms_output.put_line(a || ' > ' || b);
+	else 
+    dbms_output.put_line(a || ' =' || b);
+	end if;
+end;
+-- text/ strings
+declare
+text varchar2(30) := 'hi';
+text1 varchar2(30) := 'HI';
+begin
+    if text = 'hi' then
+    dbms_output.put_line(text);
+	elsif text1 = 'HI' then
+    dbms_output.put_line(text1);
+	else 
+    dbms_output.put_line('not matching/found');
+	end if;
+end;
+-- in condition statements pl/sql is case sensitive // same format as assigned variable 
+--pl/sql case --------------------------------
+declare
+day_name varchar2(100) := 'THU';
+begin
+	case day_name 
+        when 'SUN' then dbms_output.put_line('SUNDAY');
+		when 'MON' then dbms_output.put_line('MONDAY');
+    	when 'TUE' then dbms_output.put_line('TUESDAY');
+    	when 'WED' then dbms_output.put_line('WEDNESDAY');
+    	when 'THU' then dbms_output.put_line('THURSDAY');
+    	when 'FRI' then dbms_output.put_line('FRIDAY');
+        when 'SAT' then dbms_output.put_line('SATURDAY');
+	ELSE
+        dbms_output.put_line('NOT A DAY');
+    end case;
+end;
+--pl/sql loops
+-- basic loop
+declare
+a number := 0;
+begin
+    loop
+    dbms_output.put_line(a);
+    a := a + 1;
+    exit when a > 10;
+    end loop;
+end;
+-- for loop
+declare
+a number := 0;
+begin
+    for a in 0..10 loop
+    dbms_output.put_line(a);
+    end loop;
+end;
+-- while loop
+declare
+a number := 0;
+begin
+    while a < 11 loop
+    dbms_output.put_line(a);
+    a := a + 1;
+-- exit when a >11;
+    end loop;
+end;
+-- for loop
+declare
+a number := 0;
+begin
+    for b in 0..10 loop
+    dbms_output.put_line(b);
+    end loop;
+end;
+-- basic loop
+declare
+a number := 0;
+begin
+    loop
+    dbms_output.put_line(a);
+    a := a + 1;
+    if  a > 10 then
+    exit;
+	end if;
+    end loop;
+end;
+-- nested loops
+declare
+ a number := 0;
+begin
+    for b in 0..8 loop
+        dbms_output.put_line('outer := ' || b);
+		 a :=1;
+		loop
+            a := a + 1;
+			dbms_output.put_line('inner := ' || a);
+            exit when a > 5;
+        end loop;
+    end loop;
+end;
+-- nested loops with labels
+declare
+ a number := 0;
+begin
+<<outer_loop>>
+    for b in 0..8 loop
+        dbms_output.put_line('outer := ' || b);
+		 a :=1;
+		<<inner_loop>>
+		loop
+            a := a +1;
+			dbms_output.put_line('inner := ' || a);
+            exit when a > 5;
+        end loop inner_loop;
+    end loop outer_loop ;
+end;
+-- continue statement 
+declare
+ a number := 0;
+begin
+    for b in 0..8 loop
+        dbms_output.put_line('outer := ' || b);
+		 a :=1;
+		loop
+            a := a + 1;
+			dbms_output.put_line('inner := ' || a);
+			continue when a = 3;
+            exit when a > 5;
+        end loop;
+    end loop;
+end;
+--inner loop
+declare
+a number := 0;
+begin
+    for a in 0..10 loop
+    dbms_output.put_line(a);
+    continue when a = 3; -- skip the 3 number
+    end loop;
+end;
+-- go to statement
+declare
+searching number :=2;
+is_prime  boolean := true;
+begin
+ for a in 2..searching -1 loop
+   if mod(is_prime,a) = 0 then
+      dbms_output.put_line(searching || 'is not a prime number');
+	  is_prime := false;
+	  goto end_point;
+   end if;
+  end loop;
+ if is_prime then
+  dbms_output.put_line(searching || 'is  a prime number');
+ end if;
+<<end_point>>
+   dbms_output.put_line('checked successfully');
+end;
+-- table
+create table employees(employee_id number primary key,employee_name varchar2(100),employee_age number,employee_email varchar2(100)) 
+insert into employees values (1,'abc',22,'abc@gmail.com')
+insert into employees values (2,'bcd',23,'bcd@gmail.com')
+insert into employees values (3,'cgh',24,'cgh@gmail.com')
+insert into employees values (4,'tyh',25,'tyh@gmail.com')
+insert into employees values (5,'jkl',25,'jkl@gmail.com')
+-- selected queries
+declare
+ p_name varchar2(100);
+ p_emp_id employees.employee_id%type;
+begin
+  --select employee_name,employee_id into p_name,p_emp_id from employees;
+  select employee_name,employee_id into p_name,p_emp_id from employees where employee_id = 2;
+  dbms_output.put_line(p_name);
+  dbms_output.put_line(p_emp_id);
+end;
+--dml queries
+declare
+ p_name varchar2(100);
+ p_emp_age employees.employee_age%type;
+begin
+  for i in 6..9 loop
+    /*insert into employees (employee_id,employee_name,employee_age,employee_email) values
+    (i,'ghjdf',30,'ghjdf@gmail.com');*/
+    --update employees set employee_age =  employee_age +1 where employee_id = 2;
+    --delete from employees where employee_id = 2;
+-- we can use all above dml commands they all works
+   end loop;
+end;
+-- sequence
+create sequence s_emp_id start with 6 increment by 1;
+begin
+for i in 6..9 loop
+    insert into employees (employee_id.nextval,employee_name,employee_age,employee_email) values
+    (i,'ghjdf',30,'ghjdf@gmail.com');
+end loop;
+end;
 
 
 
