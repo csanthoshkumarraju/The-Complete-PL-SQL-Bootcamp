@@ -348,6 +348,79 @@ for i in 6..9 loop
     (i,'ghjdf',30,'ghjdf@gmail.com');
 end loop;
 end;
+create table employees(employee_id number primary key,employee_name varchar2(100),employee_age number ,employee_email varchar2(100))
+insert into employees values (3,'bcud',25,'bcud@gmail.com')
+create table employees1(employee_id number primary key,pr_name varchar2(100),employee_exp number ,project_email varchar2(100))
+insert into employees1 values (2,'lomq',2,'lomq@gmail.com')
+declare
+p_name employees.employee_name%type;
+begin
+    select employee_name into p_name from employees where employee_id =1;
+    dbms_output.put_line(p_name);
+end;
+--pl/sql records
+-- record is similar as selecting a single row
+declare
+record_employee employees%rowtype;
+begin
+  select * into record_employee from employees where employee_id =1;
+    dbms_output.put_line(' id :-'||record_employee.employee_id || ', name is '||record_employee.employee_name || ', has age ' ||record_employee.employee_age|| ', and mail is :-'|| record_employee.employee_email );  
+end;
+-- creating record
+declare
+type type_emp is record (employee_id number,employee_name varchar2(100),employee_age number ,employee_email varchar2(100));
+RECORD_EMPLOYEE TYPE_EMP;
+begin
+record_employee.employee_id := 6;
+record_employee.employee_name := 'klq';
+record_employee.employee_age := 29;
+record_employee.employee_email := 'klq@gmail.com';
+  --select * into type_emp from employees where employee_id =1;
+    dbms_output.put_line(' id :-'||record_employee.employee_id || ', name is '||record_employee.employee_name || ', has age ' ||record_employee.employee_age|| ', and mail is :-'|| record_employee.employee_email );  
+end;
+---
+declare
+type type_emp is record (employee_id number,employee_name varchar2(100),employee_age number ,employee_email varchar2(100));
+test_employee type_emp;
+begin
+test_employee.employee_id := 7;
+test_employee.employee_name := 'king';
+test_employee.employee_age := 30;
+test_employee.employee_email := 'king@gmail.com';
+  --select * into type_emp from employees where employee_id =1;
+    dbms_output.put_line(' id :-'||test_employee.employee_id || ', name is '||test_employee.employee_name || ', has age ' ||test_employee.employee_age|| ', and mail is :-'|| test_employee.employee_email );  
+end;
+-- select statement
+declare
+type type_emp is record (employee_id number,employee_name varchar2(100),employee_age number ,employee_email varchar2(100));
+RECORD_EMPLOYEE TYPE_EMP;
+begin
+  select * into RECORD_EMPLOYEE from employees where employee_id =1;
+    dbms_output.put_line(' id :-'||record_employee.employee_id || ', name is '||record_employee.employee_name || ', has age ' ||record_employee.employee_age|| ', and mail is :-'|| record_employee.employee_email );  
+end;
+-- we can also insert multiple tables at a time
+declare
+type type_emp1 is record (employee_id number,employee_name varchar2(100),employee_age number ,employee_email varchar2(100));
+type type_emp2 is record (employee_id number,pr_name varchar2(100),employee_exp number ,project_email varchar2(100));
+RECORD_EMPLOYEE type_emp1;
+begin
+     select * into RECORD_EMPLOYEE from employees where employee_id =1;
+RECORD_EMPLOYEE.project.employee_id := 1;
+RECORD_EMPLOYEE.project_name := 'king';
+RECORD_EMPLOYEE.employee_exp := 3;
+RECORD_EMPLOYEE.project_email := 'king@gmail.com';
+    dbms_output.put_line(' id :-'||record_employee.employee_id || ', name is '||record_employee.employee_name || ', has age ' ||record_employee.employee_age|| ', and mail is :-'|| record_employee.employee_email );  
+    dbms_output.put_line(' id :-'||RECORD_EMPLOYEE.project.employee_id || ', name is '||RECORD_EMPLOYEE.project_name || ', has age ' ||RECORD_EMPLOYEE.employee_exp || ', and mail is :-'|| RECORD_EMPLOYEE.project_email );  
+end;
+--dml commands - record  
+create table employees3 as select * from employees where 1=2;
+select * from employees3;
+declare
+ record_employee employees%rowtype;
+begin
+   select * into record_employee from employees where employee_id = 2;
+   insert into employees3 values record_employee;
+end;
 
 
 
