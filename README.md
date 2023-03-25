@@ -421,6 +421,112 @@ begin
    select * into record_employee from employees where employee_id = 2;
    insert into employees3 values record_employee;
 end;
+-- varray alias arrays in programing languages
+declare
+ type va_list is varray(6) of varchar2(10);
+ employees va_list;
+begin
+/* varray(6) 6 size and inside (va_list) elements must same number
+    array starts index at 1 not 0 like in python */
+  employees := va_list('abc','bcd','qwe','iop','apg','laq');
+  for k in 1..6 loop
+   dbms_output.put_line(employees(k));
+  end loop;
+end;
+-- using count function
+declare
+ type va_list is varray(6) of varchar2(10);
+ employees va_list;
+begin
+/* varray(6) 6 size and inside (va_list) elements must same number
+    array starts index at 1 not 0 like in python */
+  employees := va_list('abc','bcd','qwe','iop','apg','laq');
+  for k in 1..employees.count() loop
+   dbms_output.put_line(employees(k));
+  end loop;
+end;
+-- we can write as required elements in an varray
+declare
+ type va_list is varray(100) of varchar2(10);
+ employees va_list;
+begin
+/* varray(6) 6 size and inside (va_list) elements must same number
+    array starts index at 1 not 0 like in python */
+  employees := va_list('aqbc','bcqd','qweq','ioqp','adpg','lahq','hbcgfej');
+  for k in 1..employees.count() loop
+   dbms_output.put_line(employees(k));
+  end loop;
+end;
+--using first and last function
+declare
+ type va_list is varray(100) of varchar2(10);
+ employees va_list;
+begin
+/* varray(6) 6 size and inside (va_list) elements must same number
+    array starts index at 1 not 0 like in python */
+  employees := va_list('aqbc','bcqd','qweq','ioqp','adpg','lahq','hbcgfej','cdshjs');
+  for k in employees.first()..employees.last() loop
+   dbms_output.put_line(employees(k));
+  end loop;
+end;
+-- if exists
+declare
+ type va_list is varray(100) of varchar2(10);
+ employees va_list;
+begin
+  employees := va_list('aqbc','bcqd','qweq','ioqp','adpg','lahq','hbcgfej','cdshjs');
+  for k in 1..8 loop
+    -- for range must be the start and end index number of array not exceeded.
+    if employees.exists(k) then
+     dbms_output.put_line(employees(k));
+    end if;
+end loop;
+end;
+--retrieving from tables
+create table employees (employee_id number,employee_name varchar2(10),employee_age number ,employee_mail varchar2(100))
+insert into employees values (2,'kat',24,'kat@gmail.com')
+select * from employees;
+declare
+  type va_list is varray(100) of varchar2(10);
+  employees va_list:= va_list();
+  idx number :=1;
+begin
+    for k in 1..5 loop
+    employees.extend;
+    select employee_name into employees(idx) from employees where employee_id =1;
+    idx := idx +1;
+    dbms_output.put_line(employees(k));
+    end loop;
+end;
+-- nested tables
+/* similar as varrays
+ have key value pairs
+max 2 gb 
+delete and not stored consecutevely
+nested tables are not bounded
+*/
+declare
+ type p_list is table of varchar2(50);
+ emp p_list;
+begin
+  emp := p_list('abn','djjd','hjdsj','jsjs');
+   for k in 1..4 loop
+   dbms_output.put_line(emp(k));
+   end loop;
+end;
+-- appending elements
+declare
+ type p_list is table of varchar2(50);
+ emp p_list;
+begin
+  emp := p_list('abn','djjd','hjdsj','jsjs');
+   emp.extend;
+   emp(5) := 'fjsdko';
+   for k in 1..4 loop
+   dbms_output.put_line(emp(k));
+   end loop;
+end;
+
 
 
 
