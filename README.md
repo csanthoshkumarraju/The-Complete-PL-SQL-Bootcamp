@@ -526,6 +526,76 @@ begin
    dbms_output.put_line(emp(k));
    end loop;
 end;
+--pl/sql associative arrays
+create table employees(emp_id number,emp_name varchar2(100))
+insert into employees values (5,'nmkpk')
+select * from employees;
+alter table employees add phn_no1 number;
+declare
+type aa_list is table of employees%rowtype index by employees.emp_name%type;
+emplos aa_list;
+id employees.emp_id%type;
+n_name employees.emp_name%type;
+begin
+    for k in 1..3 loop
+    select * into emplos(k) from employees where emp_id =1;
+    end loop;
+ id := emplos.first;
+    while id is not null loop
+        dbms_output.put_line(emplos(id).emp_name);
+    id := emplos.next(id);
+    end loop;
+end;
+----delete 
+declare
+type aa_list is table of employees%rowtype index by employees.emp_name%type;
+emplos aa_list;
+id employees.emp_id%type;
+n_name employees.emp_name%type;
+begin
+    for k in 1..5 loop
+    select * into emplos(k) from employees where emp_id =1;
+    end loop;
+    emplos.delete(3,4);
+ id := emplos.first;
+    while id is not null loop
+        dbms_output.put_line(emplos(id).emp_name);
+    id := emplos.next(id);
+    end loop;
+end;
+--reverse 
+declare
+type aa_list is table of employees%rowtype index by employees.emp_name%type;
+emplos aa_list;
+id employees.emp_id%type;
+n_name employees.emp_name%type;
+begin
+    for k in 1..5 loop
+    select * into emplos(k) from employees where emp_id =1;
+    end loop;
+ id := emplos.first;
+    while id is not null loop
+        dbms_output.put_line(emplos(id).emp_name);
+    id := emplos.prior(id);
+-- prior prints last to first
+    end loop;
+end;
+-- for loop reverse *************************
+declare
+a number := 10;
+begin
+   for a in 10..1 loop
+     dbms_output.put_line(a);
+   end loop;
+end;
+-- ******************************************
+--storing collections
+create or replace type phn_no as object (ph_type varchar2(10),ph_number number)
+create or replace type phn_no1 as varray(5) of phn_no;
+insert into employees values (5,'yuu',phn_no1(phn_no('lan',123),phn_no1(phn_no('pho',1223)));
+-- nested table
+create table employees1(emp_id number,emp_name varchar2(100),phn_num number) nested table phn_num store as phn_num_table;
+insert into employees1 values (5,'yuu',phn_no1(phn_no('lan',123),phn_no1(phn_no('pho',1223)));
 
 
 
