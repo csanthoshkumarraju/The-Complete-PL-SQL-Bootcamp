@@ -652,6 +652,82 @@ begin
    end loop;
    close emp;
 end;
+--loop to get unique data for above we get same data
+declare
+  cursor emp is select * from employees where emp_id =1;
+  va_emp emp%rowtype;
+begin
+  open emp;
+  loop
+   fetch emp into va_emp;
+   exit when emp%notfound;
+   dbms_output.put_line( va_emp.emp_id|| ' '|| va_emp.emp_mail);
+   end loop;
+   close emp;
+end;
+-- while loop
+declare
+  cursor emp is select * from employees where emp_id =1;
+  va_emp emp%rowtype;
+begin
+   open emp;
+   fetch emp into va_emp;
+   while emp%found loop
+   dbms_output.put_line( va_emp.emp_id|| ' '|| va_emp.emp_mail);
+   fetch emp into va_emp;
+   end loop;
+   close emp;
+end;
+-- for loop
+declare
+  cursor emp is select * from employees where emp_id =1;
+  va_emp emp%rowtype;
+begin
+   open emp;
+   for k in 1..3 loop
+   fetch emp into va_emp;
+   dbms_output.put_line( va_emp.emp_id|| ' '|| va_emp.emp_mail);
+   end loop;
+   close emp;
+end;
+--loop to get unique data for above we get same data
+declare
+  cursor emp is select * from employees where emp_id =1;
+  va_emp emp%rowtype;
+begin
+  open emp;
+  loop
+   fetch emp into va_emp;
+   exit when emp%notfound;
+   dbms_output.put_line( va_emp.emp_id|| ' '|| va_emp.emp_mail);
+   end loop;
+   close emp;
+end;
+-- while loop
+declare
+  cursor emp is select * from employees where emp_id =1;
+  va_emp emp%rowtype;
+begin
+   open emp;
+   fetch emp into va_emp;
+   while emp%found loop
+   dbms_output.put_line( va_emp.emp_id|| ' '|| va_emp.emp_mail);
+   fetch emp into va_emp;
+   end loop;
+   close emp;
+end;
+-- for loop
+declare
+  cursor emp is select * from employees where emp_id =1;
+  va_emp emp%rowtype;
+begin
+   open emp;
+   for k in 1..3 loop
+   fetch emp into va_emp;
+   dbms_output.put_line( va_emp.emp_id|| ' '|| va_emp.emp_mail);
+   end loop;
+   close emp;
+end;
 
 
 
