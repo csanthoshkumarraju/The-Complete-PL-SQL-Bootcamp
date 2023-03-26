@@ -823,6 +823,94 @@ begin
  end loop;
  close cursor;
 end;
+create table employees (emp_id number,emp_name varchar2(10))
+insert into employees values (2,'abc')
+alter table employees add emp_loc varchar2(20);
+insert into employees (emp_loc) values ('blr');
+update employees set emp_sal = 20000 where emp_id = 2;
+alter table employees add emp_sal number;
+select * from employees
+--pl/sql exceptions
+declare
+name varchar2(100);
+begin
+select emp_name into name from employees where emp_id =2;
+
+dbms_output.put_line(name);
+exception
+  when no_data_found then
+     dbms_output.put_line('with that employee_id there is no data');
+end;
+-------
+declare
+name varchar2(100);
+begin
+select emp_name into name from employees where emp_name = 'abc';
+dbms_output.put_line(name);
+exception
+  when no_data_found then
+     dbms_output.put_line('with that employee_id there is no data');
+  when too_many_rows then
+     dbms_output.put_line('The name :- ' || name  || ' is same for more than one employee');
+end;
+-- if other errors
+declare
+name varchar2(100);
+loca varchar2(1);
+begin
+--select emp_name into name from employees where emp_name = 'abc';
+select emp_loc into loca from employees where emp_id = 1;
+     --dbms_output.put_line(name);
+     dbms_output.put_line(loca);
+exception
+  when no_data_found then
+     dbms_output.put_line('with that employee_id there is no data');
+  --when too_many_rows then
+     --dbms_output.put_line('The name :- ' || name  || ' is same for more than one employee');
+  when others then
+     dbms_output.put_line('an unexpected error occured');
+     dbms_output.put_line(sqlcode || sqlerrm);
+end;
+--non predefined exceptions
+declare
+   cannot_update_to_null exception;
+   pragma exception_init(cannot_update_to_null,-01407);
+begin
+  update employees set emp_loc = null where emp_id = 2;
+exception
+  when cannot_update_to_null then
+    dbms_output.put_line('we cant update a null value');
+end;
+-- used defined exceptions
+declare
+ high_sal exception;
+ e_sal pls_integer;
+begin
+ select emp_sal into e_sal from employees where emp_id =2;
+ if e_sal > 10000 then
+  raise high_sal;
+ end if;
+ dbms_output.put_line('salary is high');
+exception
+    when high_sal then
+     dbms_output.put_line('salary is high');
+end;
+-- raise__application_error
+declare
+ high_sal exception;
+ e_sal pls_integer;
+begin
+ select emp_sal into e_sal from employees where emp_id =2;
+ if e_sal > 10000 then
+  raise high_sal;
+ end if;
+ dbms_output.put_line('salary is high');
+exception
+    when high_sal then
+     dbms_output.put_line('salary is high');
+    raise_application_error(-202453,'salary is high',true);
+end;
+
                                                
 
 
