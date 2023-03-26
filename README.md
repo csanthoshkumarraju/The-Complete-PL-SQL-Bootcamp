@@ -728,6 +728,59 @@ begin
    end loop;
    close emp;
 end;
+--cursors with parameters
+create table employees (emp_id number);
+insert into employees values (1);
+declare
+  cursor para (p_id number) is select emp_id from employees;
+  va_emp para%rowtype;
+begin
+  open para(10);
+  fetch para into va_emp;
+  dbms_output.put_line(va_emp.emp_id);
+  close para;
+end;
+-- loop 
+declare
+  cursor para (p_id number) is select emp_id from employees;
+  va_emp para%rowtype;
+begin
+  open para(10);
+  fetch para into va_emp;
+  dbms_output.put_line(va_emp.emp_id);
+  close para;
+  open para(10);
+  loop
+  fetch para into va_emp;
+  exit when para%notfound;
+  dbms_output.put_line(va_emp.emp_id);
+  end loop;
+  close para;
+end;
+-- cursor attributes
+-- %found , %notfound , % isopen %rowcount
+declare
+  cursor att is select * from employees;
+  var_emp att%rowtype;
+begin
+ if not att%isopen then
+   open att;
+   dbms_output.put_line('pl/sql');
+ end if;
+   dbms_output.put_line(att%rowcount);
+   fetch att into var_emp;
+   dbms_output.put_line(att%rowcount);
+   fetch att into var_emp;
+   dbms_output.put_line(att%rowcount);
+   close att;
+   open att;
+    loop
+     fetch att into var_emp;
+      exit when att%notfound;
+        dbms_output.put_line(att%rowcount);
+      end loop;
+      close att;
+end;
 
 
 
