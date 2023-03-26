@@ -781,7 +781,49 @@ begin
       end loop;
       close att;
 end;
-
+-- for update cursors
+-- for update is locking and granting users
+create table employees (emp_id number,emp_name varchar2(28));
+insert into employees values(1,'qos');
+-- we need to create another user
+create user abc identified by 12;
+grant create session to abc;
+grant select any table to abc;
+grant update on [database_name].employees to abc;
+update [database_name].employees  set emp_name ='naj' where emp_id = 1;
+declare
+ cursor uc is select * from employees;
+begin
+  for r in uc in loop
+    update employees set emp_name = 'naj' where emp_id = 1;
+   end loop;
+end;
+select * from employees;
+--where current clause
+select * from employees
+declare
+ cursor cc is select * from employees;
+begin
+ for r_emp in cc loop
+   update employees set emp_name = 'naj' where emp_id = r_emp.emp_id;
+ end loop;
+end;
+-- reference cursors
+-- reference cursors like pointers store memory address of variables
+declare
+ type te_emp is ref cursor return employees%rowtype;
+ rc_emp te_emp;
+ rr_emp  employees%rowtype;
+begin
+ open rc_emp for select * from employees;
+ loop
+ fetch rc_emp into rr_emp;
+ exit when rc_emp%notfound;
+ dbms_output.put_line(rr_emp.emp_id);
+ end loop;
+ close cursor;
+end;
+                                               
 
 
 
