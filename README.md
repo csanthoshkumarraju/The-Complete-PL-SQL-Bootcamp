@@ -596,7 +596,62 @@ insert into employees values (5,'yuu',phn_no1(phn_no('lan',123),phn_no1(phn_no('
 -- nested table
 create table employees1(emp_id number,emp_name varchar2(100),phn_num number) nested table phn_num store as phn_num_table;
 insert into employees1 values (5,'yuu',phn_no1(phn_no('lan',123),phn_no1(phn_no('pho',1223)));
-
+--pl/sql cursors
+create  table employees (emp_id number,emp_name varchar2(30),emp_age number,emp_mail varchar2(20))
+insert into employees values (3,'iai',24,'iai@gmail.com')
+-- implicit curosrs are automatic alias inbuilt functions
+-- explicit cursors are user defined
+-- explicit cursor example
+declare
+  cursor emp is select emp_name,emp_mail from employees;
+/* in select statement we need to select the required columns and must be same number of we declaring
+*/
+  name employees.emp_name%type;
+  mail employees.emp_mail%type;
+begin
+  open emp;
+-- we can fetch the all the rows in a table one by one
+  fetch emp into name,mail;
+  dbms_output.put_line(name || ' '|| mail);
+  fetch emp into name,mail;
+  dbms_output.put_line(name || ' '|| mail);
+  fetch emp into name,mail;
+  dbms_output.put_line(name || ' '|| mail);
+  close emp;
+end;
+-- cursors with record
+declare
+  type rec_emp is record (name employees.emp_name%type,mail employees.emp_mail%type);
+  cursor emp is select emp_name,emp_mail from employees;
+/* in select statement we need to select the required columns and must be same number of we declaring
+*/
+  va_emp rec_emp;
+begin
+  open emp;
+-- we can fetch the all the rows in a table one by one
+  fetch emp into va_emp;
+  dbms_output.put_line(va_emp.name || ' '|| va_emp.mail);
+  fetch emp into va_emp;
+  dbms_output.put_line(va_emp.name || ' '|| va_emp.mail);
+  fetch emp into va_emp;
+  dbms_output.put_line(va_emp.name || ' '|| va_emp.mail);
+  close emp;
+end;
+-- cursor loops
+declare
+  cursor emp is select * from employees where emp_id =1;
+/* in select statement we need to select the required columns and must be same number of we declaring
+*/
+  va_emp emp%rowtype;
+begin
+  open emp;
+  loop
+-- we can fetch the all the rows in a table one by one
+   fetch emp into va_emp;
+   dbms_output.put_line( va_emp.emp_id|| ' '|| va_emp.emp_mail);
+   end loop;
+   close emp;
+end;
 
 
 
