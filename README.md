@@ -910,6 +910,98 @@ exception
      dbms_output.put_line('salary is high');
     raise_application_error(-202453,'salary is high',true);
 end;
+-- pl/sql procedure
+-- asssigning values in  declare 
+-- in is input and out is output
+create or replace procedure addi(a in number,b in number,c out number)
+is
+begin
+c := a + b;
+end addi;
+declare
+a number :=1;
+b number :=2;
+c number;
+begin
+  addi(a,b,c);
+  dbms_output.put_line(' sum of ' || a || ' and ' || b || ' = '|| c);
+  dbms_output.put_line(a || ' + ' || b || ' = '|| c);
+end;
+-- assigning values in procedure
+declare
+a number;
+b number;
+c number;
+begin
+  addi(4,5,c);
+  dbms_output.put_line('sum of numbers is ' || c );
+  dbms_output.put_line(' sum of ' || a || ' and ' || b || ' = '|| c); -- not printing a and b values 
+end;
+-- sub 
+create or replace procedure subr(a in number,b in number,c out number)
+is
+begin
+c := a - b;
+end subr;
+declare
+a number :=4;
+b number :=2;
+c number;
+begin
+  subr(a,b,c);
+  dbms_output.put_line(a || ' - ' || b || ' = '|| c);
+end;
+-- assigning values in function
+create or replace procedure addit(a out number,b out number,c out number)
+is
+begin
+	a := 2;
+	b := 3;
+	c := a + b;
+	dbms_output.put_line(a || ' + ' || b || ' = '|| c);
+end addit;
+declare
+a number;
+b number;
+c number;
+begin
+    addit(a,b,c);
+end;
+-- by execute command/function we can run code
+execute addit;
+---- pl/sql  functions
+create or replace function additi(a in number,b in number) return number
+is
+c number; 
+begin
+	c := a + b;
+    return c;
+end additi;
+declare
+a number;
+b number;
+c number;
+begin
+    c:= additi(7,2);
+    dbms_output.put_line(c);
+    dbms_output.put_line(a || ' + ' || b || ' = '|| c); --  not printing a and b values 
+end;
+-- 
+create or replace function addition(a in number,b in number) return number
+is
+c number; 
+begin
+	c := a + b;
+    return c;
+end addition;
+declare
+a number := 24;
+b number := 10;
+c number;
+begin
+    c:= addition(a,b);
+    dbms_output.put_line(a || ' + ' || b || ' = '|| c);
+end;
 
                                                
 
