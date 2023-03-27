@@ -1002,6 +1002,74 @@ begin
     c:= addition(a,b);
     dbms_output.put_line(a || ' + ' || b || ' = '|| c);
 end;
+ --local subprograms 
+create table emplooyees (emp_id number,emp_name varchar2(100));
+insert into emplooyees values (2,'loa');
+select * from emplooyees where emp_id = 2;
+declare
+    function get_empl (empl_num emplooyees.emp_id%type) return emplooyees%rowtype is empl emplooyees%rowtype;
+begin
+ select *  into empl from emplooyees where emp_id = 2;
+ return empl;
+end;
+    procedure insert_ele (emp_id emplooyees.emp_id%type) is empl emplooyees%rowtype;
+begin
+    empl := get_empl(emp_id);
+    insert into emplooyees values empl;
+end;
+begin
+  for re_emp in (select * from emplooyees ) loop
+    if re_emp.emp_name = 'abc' then
+      insert_ele (re_emp.emp_id);
+    end if;
+   end loop;
+end;
+-- overloading sub programs alias assigning same name to the existed function/procedure/subprogram
+declare
+    procedure insert_ele (p_emp_id emplooyees%rowtype) is empl emplooyees%rowtype;
+    em_id number;
+    function get_empl (pempl_num emplooyees.emp_id%type) return emplooyees%rowtype is empl emplooyees%rowtype;
+begin
+ select *  into empl from emplooyees where emp_id = 2;
+ return empl;
+end;
+begin
+    empl := get_empl(p_emp_id.emp_id);
+    insert into emplooyees values empl;
+end;
+begin
+  for re_emp in (select * from emplooyees ) loop
+    if re_emp.emp_name = 'abc' then
+      insert_ele (re_emp);
+    end if;
+   end loop;
+end;
+--handling exceptions in subprograms
+--with above  calling get_empl function
+declare
+  va_emp emplooyees%rowtype;
+begin
+  va_emp := get_empl(1);
+  dbms_output.put_line(va_emp.emp_name);
+exception
+     when others then
+     dbms_output.put_line('oracle error');
+end;
+--regular and pipelined table functions
+create type ty_day as object (va_date date,va_day_num int);
+create type ty_days_table is table of ty_day;
+create or replace function fi_get_day (p_str_date date,p_day_num int) return ty_days_table is
+va_days ty_days_table := ty_days_table();
+begin
+  for k in 1..p_day_num loop
+   va_days.extend;
+   va_days(k) := va_days(p_str_date + k,to_number(to_char(p_str_date + k,'DDD')));
+  end loop;
+return va_days;
+end;
+
+
+
 
                                                
 
