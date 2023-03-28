@@ -1067,6 +1067,186 @@ begin
   end loop;
 return va_days;
 end;
+-- pl/sql package
+-- procedure package
+-- assigning values at declare
+create or replace package addit as
+     procedure addi(a in number,b in number , c out number);
+end addit;
+create or replace package body addit as
+   procedure addi(a in number,b in number, c out number) is
+su  number;
+begin
+  su := a +  b ;
+  dbms_output.put_line(su);
+end addi;
+end addit;
+declare
+   a number := 1;
+   b number := 2;
+   c number;
+   su number;
+begin
+   addit.addi(a,b,c);
+   dbms_output.put_line('');
+   dbms_output.put_line(a || ' + '|| b || ' = ' ||  su);
+end;
+-- assigning values in procedure
+create or replace package addit as
+     procedure addi(a in number,b in number , c out number);
+end addit;
+create or replace package body addit as
+   procedure addi(a in number,b in number, c out number) is
+su  number;
+begin
+  su := a +  b ;
+  dbms_output.put_line(su);
+end addi;
+end addit;
+declare
+   a number ;
+   b number ;
+   c number;
+   su number;
+begin
+   addit.addi(12,37,c);
+   dbms_output.put_line('');
+   dbms_output.put_line(a || ' + '|| b || ' = ' ||  su);
+end;
+--function package 
+-- assigning values at declare
+create or replace package additi as
+     function addit(a in number,b in number) return number;
+end additi;
+create or replace package body additi as
+   function addit(a in number,b in number) return number is  
+    su number;    
+begin
+  su := a +  b ;
+  return su;
+end addit;
+end additi;
+declare
+   a number := 1;
+   b number := 2;
+   su number;
+begin
+   su := additi.addit(a,b);
+   dbms_output.put_line('');
+   dbms_output.put_line(a || ' + '|| b || ' = ' ||  su);
+end;
+----- assigning values in function
+create or replace package additi as
+     function addit(a in number,b in number) return number;
+end additi;
+create or replace package body additi as
+   function addit(a in number,b in number) return number is  
+    su number;    
+begin
+  su := a +  b ;
+  return su;
+end addit;
+end additi;
+declare
+   a number;
+   b number;
+   su number;
+begin
+   su := additi.addit(19,57);
+   dbms_output.put_line('');
+   dbms_output.put_line(a || ' + '|| b || ' = ' ||  su);
+end;
+--calling procedure
+declare
+   a number := 1657;
+   b number := 2460;
+   c number;
+   su number;
+begin
+   addit.addi(a,b,c);
+   dbms_output.put_line('');
+   dbms_output.put_line(a || ' + '|| b || ' = ' ||  su);
+end;
+--
+declare
+   a number ;
+   b number ;
+   c number;
+   su number;
+begin
+   addit.addi(12718,2178637,c);
+   dbms_output.put_line('');
+   dbms_output.put_line(a || ' + '|| b || ' = ' ||  su);
+end;
+-- calling function
+declare
+   a number := 132467;
+   b number := 2634;
+   su number;
+begin
+   su := additi.addit(a,b);
+   dbms_output.put_line('');
+   dbms_output.put_line(a || ' + '|| b || ' = ' ||  su);
+end;
+--
+declare
+   a number;
+   b number;
+   su number;
+begin
+   su := additi.addit(19867,421357);
+   dbms_output.put_line('');
+   dbms_output.put_line(a || ' + '|| b || ' = ' ||  su);
+end;
+----
+—pl/sql
+CREATE OR REPLACE PACKAGE salary_package AS
+  -- Function to calculate salary increments by designation
+  FUNCTION calculate_increment(p_designation IN VARCHAR2, p_salary IN NUMBER) RETURN NUMBER;
+  -- Procedure to update salary in a table
+  PROCEDURE update_salary(p_employee_id IN NUMBER, p_salary IN NUMBER);
+END salary_package;
+/
+CREATE OR REPLACE PACKAGE BODY salary_package AS
+  -- Function to calculate salary increments by designation
+  FUNCTION calculate_increment(p_designation IN VARCHAR2, p_salary IN NUMBER) RETURN NUMBER IS
+    v_increment NUMBER;
+  BEGIN
+    IF p_designation = 'C1' THEN
+      v_increment := p_salary * 0.05;
+    ELSIF p_designation = 'C2' THEN
+      v_increment := p_salary * 0.08;
+    ELSIF p_designation = 'C3' THEN
+      v_increment := p_salary * 0.1;
+    ELSIF p_designation = 'C4' THEN
+      v_increment := p_salary * 0.12;
+    ELSIF p_designation = 'C5' THEN
+      v_increment := p_salary * 0.15;       
+    ELSE
+      dbms_output.put_line('no increment');
+    END IF;
+    RETURN v_increment;
+  END;
+  -- Procedure to update salary in a table
+  PROCEDURE update_salary(p_employee_id IN NUMBER, p_salary IN NUMBER) IS
+  BEGIN
+    UPDATE Employee
+    SET salary = p_salary
+    WHERE Employee_id = p_employee_id;
+    COMMIT;
+  END;
+END salary_package;
+DECLARE
+  v_salary NUMBER;
+BEGIN
+  -- Calculate salary increment for a manager
+  v_salary := salary_package.calculate_increment('C1', 10000);
+  DBMS_OUTPUT.PUT_LINE('Salary increment for Manager: ' || v_salary);  
+  -- Update salary for an employee
+  salary_package.update_salary(1001, 11000);
+  DBMS_OUTPUT.PUT_LINE('Salary updated successfully');
+END;
+
 
 
 
