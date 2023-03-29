@@ -1480,6 +1480,66 @@ create or replace trigger disable_triggers
 begin 
      dbms_output.put_line('disabling trigger always on disable until we enable disable triggers wont affect tables and vies'); 
 end; 
+-- compound triggers
+create table employees(emp_id number,emp_name varchar2(18))
+insert into employees values (2,'fhgiuhgf');
+create or replace trigger compound_trigger
+  for insert or update or delete on employees
+compound trigger
+    v varchar2(10);
+--before statement
+before statement is
+begin
+ if inserting then
+    v := 'insert';
+ elsif updating then
+    v := 'update';
+ elsif deleting then
+    v := 'delete';
+ end if;
+   dbms_output.put_line('before statement is excecuted with '|| ' ' || v || '' ||' event');
+end  before statement;
+--before each row
+before each row is
+  a number;
+begin
+  dbms_output.put_line('before row  is excecuted with'|| ' ' || v || '' ||' event');
+end before each row;
+--after each row 
+after each row is
+begin
+  dbms_output.put_line('after  row  is excecuted with '|| ' ' || v || '' ||' event');
+end after each row;
+--after statement
+after statement is
+begin
+  dbms_output.put_line('after  statement  is excecuted with '|| ' ' || v || '' || ' event');
+end after statement;
+end;
+insert into employees values (3,'gvfhz');
+update employees set emp_name = 'chgdsGFV' where emp_id =1;
+delete from employees where emp_id =1;
+select * from employees;
+--handling mutating errors
+create or replace trigger mutating_trigger
+  before insert or update or delete on employees
+  for each row 
+declare
+  v varchar2(100);
+begin
+  select emp_name into v from employees where emp_id =2;
+  if :new.emp_name = v then
+   raise_application_error(-20005,'have same name');
+  end if;
+end;
+alter table employees disable all triggers;
+update employees set emp_name = 'chgdsGFV' where emp_id =2;
+--debugging
+   -- in oracle  developer before to run button we have settings icon it is compile and compile for debug
+
+
+
+
 
 
 
