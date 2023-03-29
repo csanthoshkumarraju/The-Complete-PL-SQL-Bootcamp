@@ -1246,6 +1246,81 @@ BEGIN
   salary_package.update_salary(1001, 11000);
   DBMS_OUTPUT.PUT_LINE('Salary updated successfully');
 END;
+-- in oracle developer we can right click and add new trigger at trigger function
+-- while creating in dialogue box we need to fill schem,name,type,time,event,columns 
+create table employees(employee_id number,employee_name varchar2(10))
+insert into employees values (2,'jshdgf');
+/* ******"No need to type query by selecting in trigger create dialogue box we get this query when we click that trigger
+or we can type its our choice to type or select.""****** */
+create or replace trigger name_trigger
+    before insert or update or delete on employees
+begin
+  dbms_output.put_line('trigger');
+end;
+-- before statement trigger
+create or replace trigger before_statement_trigger
+    before insert or update on employees
+begin
+  dbms_output.put_line('before statement trigger');
+end;
+-- after statement
+create or replace trigger after_statement_trigger
+    after insert or update or delete on employees
+begin
+  dbms_output.put_line('after statement trigger');
+end;
+-- for each row
+create or replace trigger after_foreach_statement_trigger
+    after insert or update or delete on employees
+    for each row
+begin
+  dbms_output.put_line('after statement for each trigger');
+end;
+--
+create or replace trigger before_foreach_statement_trigger
+    before insert or update or delete on employees
+    for each row
+begin
+  dbms_output.put_line('before statement for each trigger');
+end;
+-- in schema we create triggers in that triggers we type/choose trigger statements 
+-- in main schema we write queries and in in triggers menu we write triggers
+update employees set employee_name = 'gfvzhfg' where employee_id =2;
+insert into employees values (3,'fgeyig')
+delete employees where employee_id =3;
+-- got output and updated
+select * from employees;
+-- new and old qualifiers in triggers
+alter table employees disable all triggers;
+create or replace trigger new_old_statement_trigger
+    before insert or update or delete on employees
+    for each row
+begin
+  dbms_output.put_line('before statement for each trigger');
+  dbms_output.put_line('before update '|| :old.employee_name || ' after update ' || :new.employee_name );
+end;
+-- conditional predicates
+-- if we insert/update/delete line by line decreases the performance so we use conditional predicates
+create or replace trigger conditional_predicates_statement_trigger
+    before insert or update or delete on employees
+    for each row
+begin
+  dbms_output.put_line('before statement for each trigger');
+  dbms_output.put_line('before update '|| :old.employee_name || ' after update ' || :new.employee_name );
+  if inserting then
+      dbms_output.put_line('inserted in table');
+  elsif updating then
+      dbms_output.put_line('updated in table');
+  elsif deleting then
+      dbms_output.put_line('deleted in table');
+  end if;
+end;
+----
+update employees set employee_name = 'ewiajsewu' where employee_id =4;
+insert into employees values (4,'fghe')
+delete employees where employee_id =4;
+select * from employees;
+
 
 
 
