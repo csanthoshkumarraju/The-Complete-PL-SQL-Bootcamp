@@ -1320,6 +1320,169 @@ update employees set employee_name = 'ewiajsewu' where employee_id =4;
 insert into employees values (4,'fghe')
 delete employees where employee_id =4;
 select * from employees;
+create table employees(emp_id number,emp_name varchar2(20))
+insert into employees values (1,'hka')
+alter table employees add emp_age number
+insert into employees values (2,'dfhj',24)
+insert into employees values (3,'ngzggn',27) 
+update employees set emp_age = 23 where emp_id =1
+select * from employees
+-- raise_application_statement_trigger 
+create or replace trigger raise_application_statement_trigger 
+    before insert or update or delete on employees 
+    for each row 
+begin 
+  dbms_output.put_line('before statement for each trigger'); 
+  dbms_output.put_line('before update '|| :old.emp_name || ' after update ' || :new.emp_name ); 
+  if inserting then 
+    if :new.emp_age > 23 then 
+     raise_application_error(-2000,'you cant insert'); 
+    end if; 
+    dbms_output.put_line('inserted in table'); 
+  elsif updating then 
+      dbms_output.put_line('updated in table'); 
+  elsif deleting then 
+      dbms_output.put_line('deleted in table'); 
+  end if; 
+end;
+--
+insert into employees values (4,'fgilq',19) 
+create or replace trigger raise_application_statement_trigger 
+    before insert or update or delete on employees 
+    for each row 
+begin 
+  dbms_output.put_line('before statement for each trigger'); 
+  dbms_output.put_line('before update '|| :old.emp_name || ' after update ' || :new.emp_name ); 
+  if inserting then 
+    if :new.emp_age > 23 then 
+     raise_application_error(-2000,'you cant insert'); 
+    end if; 
+    dbms_output.put_line('inserted in table'); 
+  elsif updating then 
+      if :new.emp_age > 23 then 
+     raise_application_error(-2000,'you cant insert'); 
+      end if; 
+      dbms_output.put_line('updated in table'); 
+  elsif deleting then 
+      dbms_output.put_line('deleted in table'); 
+  end if; 
+end;
+---
+update employees set emp_age = 20 where emp_id =4
+-- updateof_event_statement_trigger 
+-- we can update any column
+create or replace trigger updateof_event_statement_trigger 
+    before insert or update or delete on employees 
+    for each row 
+begin 
+  dbms_output.put_line('before statement for each trigger'); 
+  dbms_output.put_line('before update '|| :old.emp_name || ' after update ' || :new.emp_name ); 
+  if inserting then 
+    if :new.emp_age > 23 then 
+     raise_application_error(-2000,'you cant insert'); 
+    end if; 
+    dbms_output.put_line('inserted in table'); 
+  elsif updating ('emp_age') then 
+      if :new.emp_age > 23 then 
+     raise_application_error(-2000,'you cant insert'); 
+      end if; 
+      dbms_output.put_line('updated in table'); 
+  elsif deleting then 
+      dbms_output.put_line('deleted in table'); 
+  end if; 
+end;
+--
+create or replace trigger updateof_event_statement_trigger 
+    before insert or update or delete on employees 
+    for each row 
+begin 
+  dbms_output.put_line('before statement for each trigger'); 
+  dbms_output.put_line('before update '|| :old.emp_name || ' after update ' || :new.emp_name ); 
+  if inserting then 
+    if :new.emp_age > 23 then 
+     raise_application_error(-2000,'you cant insert'); 
+    end if; 
+    dbms_output.put_line('inserted in table'); 
+  elsif updating then 
+      if updating ('emp_name') then 
+       raise_application_error(-2000,'you cant update'); 
+      end if; 
+      dbms_output.put_line('updated in table'); 
+  elsif deleting then 
+      dbms_output.put_line('deleted in table'); 
+  end if; 
+end;
+--
+create or replace trigger updateof_event_statement_trigger 
+    before insert or update or delete on employees 
+    for each row 
+begin 
+  dbms_output.put_line('before statement for each trigger'); 
+  dbms_output.put_line('before update '|| :old.emp_name || ' after update ' || :new.emp_name ); 
+  if inserting then 
+    if :new.emp_age > 23 then 
+     raise_application_error(-2000,'you cant insert'); 
+    end if; 
+    dbms_output.put_line('inserted in table'); 
+  elsif updating ('emp_age') then 
+      if :new.emp_age > 23 then 
+     raise_application_error(-2000,'you cant insert'); 
+      end if; 
+      dbms_output.put_line('updated in table'); 
+  elsif deleting then 
+      dbms_output.put_line('deleted in table'); 
+  end if; 
+end;
+--when triggers
+create or replace trigger when_clause_trigger 
+    before insert or update on employees 
+    for each row 
+    when (new.emp_age > 23)  
+begin 
+  raise_application_error(-20006,'you cant assign graeter than age 23'); 
+end;
+-- instead of
+create table employees1 as select * from employees
+select * from employees inner join employees1 on employees.emp_id = employees1.emp_id
+create or replace view abc as  select * from employees --inner join employees1 on employees.emp_id = employees1.emp_id
+-- instead of used when it is complex
+create or replace trigger Instead_of 
+    instead of  insert or update or delete on abc 
+    for each row 
+declare 
+    v number; 
+begin 
+     if inserting then 
+        select emp_name into v from employees; 
+        insert into employees values (v,:new.emp_name,null); 
+     elsif deleting then 
+         delete from employees where emp_id =1; 
+     elsif updating ('emp_name') then  
+          update employees set emp_name = 'dfhgfh' where emp_id =2; 
+     else 
+       raise_application_error(-20007,'instead of '); 
+     end if; 
+end;
+-- exploring and managing triggers
+select * from user_triggers
+alter trigger Instead_of enable 
+alter trigger Instead_of disable 
+alter table employees enable all triggers 
+alter table employees disable all triggers 
+alter trigger Instead_of enable 
+alter trigger Instead_of compile 
+drop trigger Instead_of 
+-- disable triggers
+create or replace trigger disable_triggers 
+  before  insert or update or delete on employees 
+  for each row 
+  disable  
+begin 
+     dbms_output.put_line('disabling trigger always on disable until we enable disable triggers wont affect tables and vies'); 
+end; 
+
+
+
 
 
 
