@@ -1536,20 +1536,115 @@ alter table employees disable all triggers;
 update employees set emp_name = 'chgdsGFV' where emp_id =2;
 --debugging
    -- in oracle  developer before to run button we have settings icon it is compile and compile for debug
+--dynamic sql & pl/sql
+-- execute immediate statement
+create table employees (emp_id number,emp_name varchar2(200));
+insert into employees values (2,'ghsur');
+begin
+  execute immediate 'grant select on employees to sys';
+end;
+create or replace procedure dyna (tab_name in varchar2,p_col in varchar2) is 
+begin 
+  execute immediate 'create table'|| tab_name || ' (' || p_col || ')';
+end;
+exec dyna('dynami','id number');
+-- we need to grant 
+-- using clause
+create or replace function usin (tab_name in varchar2,p_col in varchar2) return pls_integer is
+emp_id number;
+emp_name varchar2(30);
+begin 
+  execute immediate 'insert into ' || tab_name || 'values (:a,:b)' using emp_id,emp_name;
+  return sql%rowcount;
+end;
+--using and into clause
+create or replace function usint (tab_name in varchar2) return pls_integer is
+    v_cnt pls_integer;
+begin 
+  execute immediate 'select count(*) from' || tab_name into  v_cnt;
+  return v_cnt;
+end;
+-- calling using and into clause function
+set serveroutput on;
+begin
+ dbms_output.put_line('there are '|| usint('employees') || 'rows ');
+end;
+-- execute immediate with bulk collect into clause
+declare
+ type ty_name is table of varchar2(198);
+ names ty_name;
+begin
+ execute immediate 'select * from employees' bulk collect into names;
+ for k in 0..names.count loop
+   dbms_output.put_line(names(k));
+ end loop;
+end;
+-- dynamic pl/sql blocks
+begin
+   for emp in (select * from employees) loop
+        dbms_output.put_line(emp.emp_id || emp.emp_name );
+   end loop;
+end;
+declare
+  v_text varchar2(999);
+begin
+  v_text := q'[begin
+    for emp in (select * from employees) loop
+        dbms_output.put_line(emp.emp_id || emp.emp_name );
+    end loop;
+    end;]';
+  execute immediate v_text;
+end;
+--
+declare
+  v_text varchar2(999);
+begin
+  v_text := q'[declare
+    dep_id pls_integer :=100; 
+    begin
+    for emp in (select * from employees where emp_id = dep_id) loop
+        dbms_output.put_line(emp.emp_id || emp.emp_name );
+    end loop;
+    end;]';
+  execute immediate v_text;
+end;
+--open fetch close
+declare
+   type emp is ref cursor;
+   emp_cur emp;
+   emp_rec employees%rowtype;
+begin
+   open emp_cur for ' select * from employees where emp_id = 1';
+    fetch emp_cur into emp_rec;
+   dbms_output.put_line(emp_rec.emp_name);
+   close emp_cur;
+end;
+--dynamic sql & pl/sql package
+create table employees1 as select * from employees;
+select * from employees1;
+declare
+ v_tab varchar2(20) := 'employees1';
+ v_cursor  pls_integer;
+ v_mod_rows pls_integer;
+begin
+  v_cursor := dbms_sql.open_cursor;
+  dbms_sql.parse(v_cursor,'update' || v_tab , dbms_sql.native);
+  v_mod_rows := dbms_sql.execute(v_cursor);
+  dbms_output.put_line(v_mod_rows);
+  dbms_sql.close_cursor(v_cursor);
+end;
+--oracle supplied packages alias built in packages
+--dbms_package
+exec dbms_output.put_line('v_mod_rows');
+--we use utl_file package for upload and accessing files from the system
+-- we use utl_mail package for mail sending
+begin
+  utl_mail.send(sender => 'some person <someone@somedomain.com>',
+                 recipients => 'abc<abc@gmail.com>',
+                 subject  => 'example ',
+                 messege => 'mail from pl/sql utl_mail package'
+               );
+end;
 
-
-
-
-
-
-
-
-
-
-
-
-
-                                               
-
-
-
+-- managing security for definers rights invoker
+                                             
